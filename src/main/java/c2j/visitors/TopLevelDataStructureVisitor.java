@@ -30,6 +30,12 @@ public class TopLevelDataStructureVisitor extends Cobol85BaseVisitor<Boolean> {
 		if (entry.getType() == DataDescriptionEntry.Type.GROUP) {
 			DataDescriptionEntryGroup group = (DataDescriptionEntryGroup) entry;
 			DataDescriptionEntryGroup parent = group.getParentDataDescriptionEntryGroup();
+			// If the group is not used, we can ignore it:
+			// BUGGY: if the group is used only on the left hand side of a move, getCalls is zero, but it shouldn't be skipped!
+			if (group.getCalls().size() == 0) {
+				System.out.println("Skipping unused variable " + group.getName());
+				return true;
+			}
 			if (parent == null) {
 				// Top level elements
 				fillerCnt = 1;

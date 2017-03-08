@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class CompilationUnitContainer {
 
@@ -21,18 +24,26 @@ public class CompilationUnitContainer {
 		this.basePackage = basePackage;
 		this.cobolProgramm = cobolProgramm;
 		
-        this.createMainClass();
+		this.createMainClass();
 	}
 	
 	public ClassOrInterfaceDeclaration createMainClass() {
 		String className = cobolProgramm;
-        CompilationUnit main = new CompilationUnit();
-        main.setPackageDeclaration(basePackage);
-        ClassOrInterfaceDeclaration mainClass = main.addClass(className);
-        compilationUnits.put(basePackage + "." + className, main);
-        classes.put(basePackage + "." + className, mainClass);
-        return mainClass;
+		CompilationUnit main = new CompilationUnit();
+		main.setPackageDeclaration(basePackage);
+		ClassOrInterfaceDeclaration mainClass = main.addClass(className);
+		MethodDeclaration mainMethod = mainClass.addMethod("main", Modifier.PUBLIC, Modifier.STATIC);
+		BlockStmt block = new BlockStmt();
+		mainMethod.setBody(block);
+		compilationUnits.put(basePackage + "." + className, main);
+		classes.put(basePackage + "." + className, mainClass);
+		return mainClass;
 	}
+
+  public MethodDeclaration getMainMethod() {
+    ClassOrInterfaceDeclaration klazz = getMainClass();
+    return klazz.getMethodsByName("main").get(0);
+  }
 	
 	public ClassOrInterfaceDeclaration createDataStructureClass(String cobolName) {
 		String className = cobolName;

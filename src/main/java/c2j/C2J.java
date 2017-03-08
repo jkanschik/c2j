@@ -1,5 +1,6 @@
 package c2j;
 
+import c2j.visitors.CompilationUnitVisitor;
 import io.proleap.cobol.asg.applicationcontext.CobolParserContext;
 import io.proleap.cobol.asg.applicationcontext.CobolParserContextFactory;
 import io.proleap.cobol.asg.metamodel.CompilationUnit;
@@ -18,7 +19,7 @@ public class C2J {
 		CobolParserContextFactory.configureDefaultApplicationContext();
 
 		// generate ASG from plain COBOL code
-		java.io.File inputFile = new File("src/test/resources/cobol/test1.cbl");
+		java.io.File inputFile = new File("src/test/resources/cobol/simple.cbl");
 		CobolSourceFormatEnum format = CobolSourceFormatEnum.VARIABLE;
 		Program program = CobolParserContext.getInstance().getParserRunner().analyzeFile(inputFile, format);
 
@@ -26,6 +27,7 @@ public class C2J {
 		for (CompilationUnit compilationUnit2 : program.getCompilationUnits()) {
 			CompilationUnitContainer container = new CompilationUnitContainer("c2j.example", compilationUnit2.getName());
 			new TopLevelDataStructureVisitor(container).visit(compilationUnit2.getCtx());
+			new CompilationUnitVisitor(container).visit(compilationUnit2.getCtx());
 			new CUPrinter().print(container);
 		}
 	
