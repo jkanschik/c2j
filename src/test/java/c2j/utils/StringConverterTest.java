@@ -20,7 +20,6 @@ public class StringConverterTest {
 		assertThat(StringConverter.cobolToClassName("Feld-X"), is("Feld_X"));
 		assertThat(StringConverter.cobolToClassName("FELD-1"), is("Feld_1"));
 		assertThat(StringConverter.cobolToClassName("FELD-1-2"), is("Feld_1_2"));
-		assertThat(StringConverter.cobolToClassName("FeldX"), is("FeldX"));
 	}
 
 }
